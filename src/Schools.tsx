@@ -132,7 +132,8 @@ const GuideLineTable = () => {
       console.log(i, bookType, guideline[i][bookType]);
     }
   }
-
+  const totalCount = []
+  const totalCost = []
   return (
     <TableContainer component={Paper}>
       <Table>

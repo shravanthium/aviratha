@@ -1,11 +1,37 @@
-# Getting Started with Create React App
+# A Web App to manage Note Book Donation Drive for an NGO(Aviratha)
+The annual notebook distribution drive, a unique longitudinal program has evolved as a flagship initiative of Aviratha. This program is part of the Aviratha’s larger involvement in value addition to primary education and infrastructure development of schools. Following are salient features of the program.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### What does Aviratha provide?
+
+Provision of all variety of note books and stationery required for one full academic year
+
+### Who are beneficiaries?
+
+Children studying in Government schools located in socio-economically backward regions or government schools composed largely of children from socially disadvantaged groups. 
+
+### How are books provided?
+
+In January of every year, Aviratha begins a survey of potential beneficiaries and calculates required resources. Beneficiaries are notified about the intervention prior hand through school teachers. In following July, teams consisting of volunteers delivery books directly to every child in their schools.
+
+### How many have benefited so far?
+
+Dependent on donations, about 20,000 new students have being added annually. Once included, no school till date has been left in following years of the program.
+
+### How is the program funded?
+
+The program is largely dependent on public donations raised annually. Corporate entities also donate in larger values and are acknowledged on wrappers of note books. To ensure continuity of program and longitudinal assurance to beneficiaries, Aviratha has setup a corpus fund exclusively for this program. Interest earned through this corpus is being used to fund the program as well.  
+
+### What are unique features of this program?
+
+ All varieties of books provided
+ Annual continuity
+ Direct to beneficiary
+ Zero administrative and logistic costs
 
 ## Available Scripts
 
 In the project directory, you can run:
-
+(You need to configure your firebase config in src/FIREBASE_CONFIG.js file to get the project up and running.)
 ### `yarn start`
 
 Runs the app in the development mode.\
@@ -27,20 +53,3 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
