@@ -29,7 +29,9 @@ import {
   NumberInput,
   usePermissions,
   Labeled,
-  useRecordContext
+  useRecordContext,
+  useNotify,
+  useRedirect,
 } from "react-admin";
 
 const SchoolFilter = (props: any) => {
@@ -72,14 +74,14 @@ const CustomTable = () => {
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell>Class</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}>Class</TableCell>
             {record.classes.map((item: any, index: any) => (
-              <TableCell key={index}>{index + 1}</TableCell>
+              <TableCell key={index} sx={{ fontWeight: 'bold', m: 1 }}>{index + 1}</TableCell>
 
             ))}
           </TableRow>
           <TableRow>
-            <TableCell>No. Of Students</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}>No. Of Students</TableCell>
             {record.classes.map((item: any, index: any) => (
               <TableCell key={index}>{item.count}</TableCell>
 
@@ -87,8 +89,8 @@ const CustomTable = () => {
           </TableRow>
           <TableRow>
             <TableCell />
-            <TableCell >Total</TableCell>
-            <TableCell >{totalCount}</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}>Total</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}>{totalCount}</TableCell>
           </TableRow>
         </TableBody>
 
@@ -132,36 +134,42 @@ const GuideLineTable = () => {
       console.log(i, bookType, guideline[i][bookType]);
     }
   }
-  const totalCount = []
-  const totalCost = []
+  const totalCount: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+  const computeTotal = (index: number, count: number, value: number) => {
+    const product = count * value; // Calculate the product
+    totalCount[index] += product; // Update the total for the specific index
+    return product; // Return the calculated product
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableBody>
-          <TableRow>
-            <TableCell>Class</TableCell>
+          <TableRow >
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}>Class</TableCell>
             {record.classes.map((item: any, index: any) => (
-              <TableCell key={index}>{index + 1}</TableCell>
+              <TableCell key={index} sx={{ fontWeight: 'bold', m: 1 }}>{index + 1}</TableCell>
 
             ))}
           </TableRow>
           <TableRow>
-            <TableCell>No. Of Students</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', m: 1, color:'red' }}>No. Of Students</TableCell>
             {record.classes.map((item: any, index: any) => (
-              <TableCell key={index}>{item.count}</TableCell>
+              <TableCell key={index} sx={{ fontWeight: 'bold', m: 1, color:'red'}}>{item.count}</TableCell>
 
             ))}
           </TableRow>
           {
             bookTypes.map((bookType, i) => (
               <TableRow key={i}>
-                <TableCell>{bookType}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', m: 1 }}>{bookType}</TableCell>
                 {record.classes.map((item: { count: string; }, index: Number) => {
                   // Check if index is a valid number
                   if (typeof index === 'number') {
                     return (
                       <TableCell key={index}>
-                        {parseInt(item.count) * guideline[index][bookType]}
+                        {computeTotal(index,parseInt(item.count),guideline[index][bookType])}
                       </TableCell>
                     );
                   }
@@ -170,6 +178,13 @@ const GuideLineTable = () => {
               </TableRow>
             ))
           }
+           <TableRow>
+            <TableCell sx={{ fontWeight: 'bold', m: 1, color:"blue" }}>Total</TableCell>
+            {totalCount.map((item: any, index: any) => (
+              <TableCell key={index} sx={{ fontWeight: 'bold', m: 1, color:"blue" }}>{item}</TableCell>
+
+            ))}
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>
@@ -230,14 +245,18 @@ export const SchoolShow = (props: any) => {
 
 
 export const SchoolCreate = (props: any) => {
-  const choices = [
-    { code: 'GLPS', name: 'Govt Lower Primay School' },
-    { code: 'GHPS', name: 'Govt Higher Primay School' },
-    { code: 'GPS', name: 'Govt Primary School' },
-  ];
-  return (<Create {...props}>
+
+  const notify = useNotify();
+  const redirect = useRedirect();
+
+  const onSuccess = () => {
+    notify(`Changes saved`);
+    redirect(`/schools`);
+  };
+
+  return (<Create {...props} mutationOptions={{ onSuccess }}>
     <SimpleForm>
-      <SelectInput source="name" choices={choices} />
+      <TextInput source="name" />
       <Stack spacing={2} direction="row">
         <TextInput source="village" />
         <TextInput source="taluk" />
@@ -248,8 +267,8 @@ export const SchoolCreate = (props: any) => {
         <TextInput source="schoolcoordinator" label="School Coordinator" />
       </Stack>
       <Stack spacing={2} direction="row">
-        <TextInput source="schoolcontact" label="School Contact" />
-        <TextInput source="schoolcontactno" label="School Contact No." />
+        <TextInput source="schoolcontact" label="School Contact Person" />
+        <TextInput source="schoolcontactno" label="School Contact Person No." />
       </Stack>
       {/* Render 10 NumberInput fields with fixed names */}
       <Stack spacing={2} direction="row">
