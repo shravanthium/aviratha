@@ -5,14 +5,15 @@ import {
   FirebaseAuthProvider,
   RAFirebaseOptions
 } from "react-admin-firebase";
-import { SchoolList, SchoolShow } from "./Schools";
-import {SchoolCreate, SchoolEdit } from "./school/SchoolCreate";
+import { SchoolList } from "./school/SchoolList";
+import {SchoolCreate, SchoolEdit } from "./school/SchoolCreateEdit";
 import { GuidelineList } from "./Guideline";
 import { AvAppBar } from "./AvAppBar";
 import { AvTheme } from "./AvTheme";
 
 import BookIcon from '@mui/icons-material/Book';
 import PeopleIcon from '@mui/icons-material/People';
+import { SchoolShow } from "./school/SchoolShow";
 
 const config = require("./FIREBASE_CONFIG.js").firebaseConfig;
 
@@ -34,7 +35,7 @@ class App extends React.Component {
   
   render() {
     return (
-      <Admin dataProvider={dataProvider} authProvider={authProvider} theme={AvTheme} darkTheme={darkTheme} layout={AvLayout}>
+      <Admin dataProvider={dataProvider} authProvider={authProvider} theme={AvTheme} layout={AvLayout}>
         <Resource
           name="schools"
           list={SchoolList}
