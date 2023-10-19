@@ -5,7 +5,8 @@ import {
   FirebaseAuthProvider,
   RAFirebaseOptions
 } from "react-admin-firebase";
-import { SchoolCreate, SchoolEdit, SchoolList, SchoolShow } from "./Schools";
+import { SchoolList, SchoolShow } from "./Schools";
+import {SchoolCreate, SchoolEdit } from "./school/SchoolCreate";
 import { GuidelineList } from "./Guideline";
 import { AvAppBar } from "./AvAppBar";
 import { AvTheme } from "./AvTheme";
