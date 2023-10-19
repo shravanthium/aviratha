@@ -9,6 +9,7 @@ import {
   TableBody,
   TableCell,
 } from '@mui/material';
+import { TopToolbar, SelectColumnsButton, FilterButton, CreateButton, ExportButton } from 'react-admin';
 
 import {
   Datagrid,
@@ -34,18 +35,36 @@ import {
   useRedirect,
 } from "react-admin";
 
-const SchoolFilter = (props: any) => {
-  return (<Filter {...props}>
-    <TextInput label="Search" source="title" alwaysOn />
-  </Filter>);
-};
+const SchoolFilter = [
+<TextInput label="Search" source="village" alwaysOn />,
+<TextInput label="District" source="district"/>,
+<TextInput label="Team Lead" source="teamlead"/>,
+]
+
+
+const ListActions = () => (
+  <TopToolbar>
+      <FilterButton/>
+      <CreateButton/>
+      <ExportButton/>
+  </TopToolbar>
+);
+
 
 export const SchoolList = (props: any) => {
   const { permissions } = usePermissions();
 
+  const StudentsTotalField = ({ label }: { label: string }) => {
+    const record = useRecordContext();
+    const totalCount = record.classes.reduce((sum: any, item: any) => sum + parseInt(item.count), 0);
+    return totalCount;
+}
+
   return (
-    <List {...props} filters={<SchoolFilter />} sortable={false}>
-      <Datagrid>
+    <List sx={{ p: 2 }} {...props} actions={<ListActions/>} filters={SchoolFilter} sortable={false}>
+      <Datagrid rowClick="show" sx={{ "& .RaDatagrid-headerCell": {
+                    fontWeight: 'bold', m: 1
+                }, }}>
         <TextField source="name" label="Name" />
         <TextField source="village" label="Village" />
         <TextField source="taluk" label="Taluk" />
@@ -54,6 +73,7 @@ export const SchoolList = (props: any) => {
         <TextField source="teamlead" label="Team Lead" />
         <TextField source="schoolcontact" label="School Contact" />
         <TextField source="schoolcontactno" label="School Contact No." />
+        <StudentsTotalField  label="Total Students" />
         <ShowButton label="" />
         <EditButton label="" />
         {permissions === 'admin' && <DeleteButton label="" />}
@@ -129,18 +149,39 @@ const GuideLineTable = () => {
   ]
 
   const bookTypes = ["Drawing", "Square", "DoubleRule", "FourLine", "SingleRule", "HorizantalMath", "Unruled", "Graph"]
+  const bookCosts: any = {
+    "Drawing": 24,
+    "Square": 30,
+    "DoubleRule": 30,
+    "FourLine": 30,
+    "SingleRule": 30,
+    "HorizantalMath": 30,
+    "Unruled": 30,
+    "Graph":17
+  };
   for (const bookType of bookTypes) {
     for (let i = 0; i < guideline.length; i++) {
       console.log(i, bookType, guideline[i][bookType]);
     }
   }
+  const totalStudentsCount = record.classes.reduce((sum: any, item: any) => sum + parseInt(item.count), 0);
   const totalCount: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
+  const bookWiseCount: number[] = [0,0,0,0,0,0,0,0];
   const computeTotal = (index: number, count: number, value: number) => {
-    const product = count * value; // Calculate the product
-    totalCount[index] += product; // Update the total for the specific index
-    return product; // Return the calculated product
+    const product = count * value; 
+    totalCount[index] += product; 
+    return product;
   };
+
+  let totalSchoolCost = 0
+  let totalSchoolBooksCount = 0
+  const computeTotalCost = (booksCount:number, cost:number) => {
+    const bookWiseTotalCost = booksCount * cost;
+    totalSchoolBooksCount += booksCount;
+    totalSchoolCost += bookWiseTotalCost;
+    return bookWiseTotalCost
+
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -152,6 +193,9 @@ const GuideLineTable = () => {
               <TableCell key={index} sx={{ fontWeight: 'bold', m: 1 }}>{index + 1}</TableCell>
 
             ))}
+            <TableCell  sx={{ fontWeight: 'bold', m: 1}}>Total</TableCell>
+            <TableCell  sx={{ fontWeight: 'bold', m: 1}}>Cost/Book</TableCell>
+            <TableCell  sx={{ fontWeight: 'bold', m: 1}}>Total Cost</TableCell>
           </TableRow>
           <TableRow>
             <TableCell sx={{ fontWeight: 'bold', m: 1, color:'red' }}>No. Of Students</TableCell>
@@ -159,6 +203,9 @@ const GuideLineTable = () => {
               <TableCell key={index} sx={{ fontWeight: 'bold', m: 1, color:'red'}}>{item.count}</TableCell>
 
             ))}
+            <TableCell sx={{ fontWeight: 'bold', m: 1, color:"red" }}>{totalStudentsCount}</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
           </TableRow>
           {
             bookTypes.map((bookType, i) => (
@@ -167,23 +214,31 @@ const GuideLineTable = () => {
                 {record.classes.map((item: { count: string; }, index: Number) => {
                   // Check if index is a valid number
                   if (typeof index === 'number') {
+                    const _total = computeTotal(index,parseInt(item.count),guideline[index][bookType])
+                    bookWiseCount[i] += _total
                     return (
                       <TableCell key={index}>
-                        {computeTotal(index,parseInt(item.count),guideline[index][bookType])}
+                        {_total}
                       </TableCell>
                     );
                   }
                   return null; // Return null for invalid indices
                 })}
+                <TableCell  sx={{ fontWeight: 'bold', m: 1, color:"green" }}>{bookWiseCount[i]}</TableCell>
+                <TableCell  sx={{ fontWeight: 'bold', m: 1, color:"green" }}>{bookCosts[bookType]}</TableCell>
+                <TableCell  sx={{ fontWeight: 'bold', m: 1, color:"green" }}>{computeTotalCost(bookWiseCount[i], bookCosts[bookType])}</TableCell>
               </TableRow>
             ))
           }
-           <TableRow>
-            <TableCell sx={{ fontWeight: 'bold', m: 1, color:"blue" }}>Total</TableCell>
+           <TableRow sx={{backgroundColor: "LightGrey",}}>
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}>Total</TableCell>
             {totalCount.map((item: any, index: any) => (
-              <TableCell key={index} sx={{ fontWeight: 'bold', m: 1, color:"blue" }}>{item}</TableCell>
+              <TableCell key={index} sx={{ fontWeight: 'bold', m: 1 }}>{item}</TableCell>
 
             ))}
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}>{totalSchoolBooksCount}</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', m: 1 }}></TableCell>
+            <TableCell sx={{ fontWeight: 'bold', m: 1, color:"red" }}>{totalSchoolCost} &#8377;</TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -244,75 +299,6 @@ export const SchoolShow = (props: any) => {
 
 
 
-export const SchoolCreate = (props: any) => {
 
-  const notify = useNotify();
-  const redirect = useRedirect();
-
-  const onSuccess = () => {
-    notify(`Changes saved`);
-    redirect(`/schools`);
-  };
-
-  return (<Create {...props} mutationOptions={{ onSuccess }}>
-    <SimpleForm>
-      <TextInput source="name" />
-      <Stack spacing={2} direction="row">
-        <TextInput source="village" />
-        <TextInput source="taluk" />
-        <TextInput source="district" />
-      </Stack>
-      <Stack spacing={2} direction="row">
-        <TextInput source="teamlead" label="Team Lead" />
-        <TextInput source="schoolcoordinator" label="School Coordinator" />
-      </Stack>
-      <Stack spacing={2} direction="row">
-        <TextInput source="schoolcontact" label="School Contact Person" />
-        <TextInput source="schoolcontactno" label="School Contact Person No." />
-      </Stack>
-      {/* Render 10 NumberInput fields with fixed names */}
-      <Stack spacing={2} direction="row">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
-          <div key={index}>
-            <TextInput label="" source={`classes[${index - 1}].name`} defaultValue={`Class ${index}`} disabled />
-            <NumberInput label="Count" source={`classes[${index - 1}].count`} defaultValue="0" />
-          </div>
-        ))}
-      </Stack>
-    </SimpleForm>
-  </Create>
-  );
-}
-
-
-export const SchoolEdit = (props: any) => (
-  <Edit {...props}>
-    <SimpleForm>
-      <TextInput source="name" />
-      <Stack spacing={2} direction="row">
-        <TextInput source="village" />
-        <TextInput source="taluk" />
-        <TextInput source="district" />
-      </Stack>
-      <Stack spacing={2} direction="row">
-        <TextInput source="teamlead" label="Team Lead" />
-        <TextInput source="schoolcoordinator" label="School Coordinator" />
-      </Stack>
-      <Stack spacing={2} direction="row">
-        <TextInput source="schoolcontact" label="School Contact" />
-        <TextInput source="schoolcontactno" label="School Contact No." />
-      </Stack>
-      {/* Render 10 NumberInput fields with fixed names */}
-      <Stack spacing={2} direction="row">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
-          <div key={index}>
-            <TextInput label="" source={`classes[${index - 1}].name`} defaultValue={`Class ${index}`} disabled />
-            <NumberInput label="Count" source={`classes[${index - 1}].count`} defaultValue="0" />
-          </div>
-        ))}
-      </Stack>
-    </SimpleForm>
-  </Edit>
-);
 
 
