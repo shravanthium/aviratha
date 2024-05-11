@@ -9,6 +9,7 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Button,
 } from '@mui/material';
 import { TopToolbar, SelectColumnsButton, FilterButton, CreateButton, ExportButton } from 'react-admin';
 
@@ -37,6 +38,7 @@ import {
 } from "react-admin";
 
 import { GuideLineTable } from './GuidelineTable';
+import PrintIcon from '@mui/icons-material/Print';
 
 
 import { useReactToPrint } from 'react-to-print';
@@ -50,15 +52,6 @@ const SchoolFilter = [
 ]
 
 
-const ListActions = () => (
-  <TopToolbar>
-    <FilterButton />
-    <CreateButton />
-    <ExportButton />
-  </TopToolbar>
-);
-
-
 export const SchoolList = (props: any) => {
   const { permissions } = usePermissions();
 
@@ -68,24 +61,30 @@ export const SchoolList = (props: any) => {
     return totalCount;
   }
 
-    const componentRef = useRef(null);
+    const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
-     content: () => componentRef.current,
-     documentTitle: 'Visitor Pass',
-     onAfterPrint: () => console.log('Printed PDF successfully!'),
+      documentTitle: "Print This Document",
+      onBeforePrint: () => console.log("before printing..."),
+      onAfterPrint: () => console.log("after printing..."),
+      removeAfterPrint: true,
     });
 
-  return (
+    const ListActions = () => (
+        <TopToolbar>
+            <FilterButton />
+            <CreateButton />
+            <ExportButton />
+            <Button variant="outlined" size="small" startIcon={<PrintIcon />} onClick={() => {
+                  handlePrint(null, () => contentToPrint.current);
+                }}>PRINT
+            </Button> 
+    </TopToolbar>
+      );
+      
+    return (
     <>
-    <button style={{
-      width: '100px',
-      height: '50px',
-      fontSize: '20px',
-      margin: 'auto',
-      display: 'block',
-      marginTop: '20px',
-}} onClick={handlePrint}>Print pass</button>
-    <List sx={{ p: 2 }} {...props} actions={<ListActions />} filters={SchoolFilter} sortable={false}>
+    <div ref={contentToPrint}>
+    <List sx={{ p: 2 }} {...props} actions={<ListActions />} filters={SchoolFilter} sortable={false} >
       <Datagrid rowClick="show" sx={{
         "& .RaDatagrid-headerCell": {
           fontWeight: 'bold', m: 1
@@ -106,6 +105,7 @@ export const SchoolList = (props: any) => {
 
       </Datagrid>
     </List>
+    </div>
     </>
   );
 }
