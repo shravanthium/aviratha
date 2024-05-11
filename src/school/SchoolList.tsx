@@ -1,5 +1,6 @@
 // in src/posts.js
 // tslint:disable-next-line:no-var-requires
+import React, { useRef } from 'react';
 import {
   Stack,
   TableContainer,
@@ -37,6 +38,11 @@ import {
 
 import { GuideLineTable } from './GuidelineTable';
 
+
+import { useReactToPrint } from 'react-to-print';
+
+
+
 const SchoolFilter = [
   <TextInput label="Search" source="village" alwaysOn />,
   <TextInput label="District" source="district" />,
@@ -62,7 +68,23 @@ export const SchoolList = (props: any) => {
     return totalCount;
   }
 
+    const componentRef = useRef(null);
+    const handlePrint = useReactToPrint({
+     content: () => componentRef.current,
+     documentTitle: 'Visitor Pass',
+     onAfterPrint: () => console.log('Printed PDF successfully!'),
+    });
+
   return (
+    <>
+    <button style={{
+      width: '100px',
+      height: '50px',
+      fontSize: '20px',
+      margin: 'auto',
+      display: 'block',
+      marginTop: '20px',
+}} onClick={handlePrint}>Print pass</button>
     <List sx={{ p: 2 }} {...props} actions={<ListActions />} filters={SchoolFilter} sortable={false}>
       <Datagrid rowClick="show" sx={{
         "& .RaDatagrid-headerCell": {
@@ -84,6 +106,7 @@ export const SchoolList = (props: any) => {
 
       </Datagrid>
     </List>
+    </>
   );
 }
 
