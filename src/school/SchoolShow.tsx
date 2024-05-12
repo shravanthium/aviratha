@@ -23,14 +23,13 @@ export const SchoolShow = (props: any) => {
       handlePrint(null, () => contentToPrint.current);
     }}>PRINT</Button> 
 </TopToolbar>
-    
   );
   return (
     <div>
           
       <div  ref={contentToPrint}>
       
-      <Show {...props} title="name" sx={{ p: 2 }} actions={<PrintButton />}>
+      <Show {...props} title="name" sx={{ p: 1 }} actions={<PrintButton />}>
         <SimpleShowLayout>
           <Stack spacing={2} direction="row">
             <Labeled>

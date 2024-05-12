@@ -13,15 +13,19 @@ import { AvAppBar } from "./AvAppBar";
 import { AvTheme } from "./AvTheme";
 
 import BookIcon from '@mui/icons-material/Book';
+import WidgetsIcon from '@mui/icons-material/Widgets';
 import PeopleIcon from '@mui/icons-material/People';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { SchoolShow } from "./school/SchoolShow";
 import { JSX } from "react/jsx-runtime";
 import CustomLoginPage from "./CustomLoginPage";
+import { InventoryList } from "./inventory/InventoryList";
+import { InventoryCreate } from "./inventory/InventoryCreateEdit";
 
 const config = require("./FIREBASE_CONFIG.js").firebaseConfig;
 
 const options: RAFirebaseOptions = {
-  logging: true,
+  logging: false,
 };
 
 const firebaseApp = firebase.initializeApp(config);
@@ -39,19 +43,32 @@ class App extends React.Component {
   
   render() {
     return (
-      <Admin loginPage={CustomLoginPage} dataProvider={dataProvider} authProvider={authProvider} theme={AvTheme} layout={AvLayout}>
+      <Admin 
+        loginPage={CustomLoginPage} 
+        dataProvider={dataProvider} 
+        authProvider={authProvider} 
+        theme={AvTheme} 
+        layout={AvLayout}
+        >
         <Resource
           name="schools"
           list={SchoolList}
           show={SchoolShow}
           create={SchoolCreate}
           edit={SchoolEdit}
-          icon={PeopleIcon}
+          icon={AccountBalanceIcon}
         />
         <Resource
           name="guideline"
           list={GuidelineList}
           icon={BookIcon}
+        />
+        <Resource
+          name="inventory"
+          list={InventoryList}
+          icon={WidgetsIcon}
+          create={InventoryCreate}
+          edit={InventoryCreate}
         />
       </Admin>
     );

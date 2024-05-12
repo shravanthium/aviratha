@@ -9,7 +9,7 @@ export const ClassWiseCount = () => {
   
     return (
       <TableContainer component={Paper}>
-        <Table>
+        <Table size={'small'}>
           <TableBody>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold', m: 1 }}>Class</TableCell>

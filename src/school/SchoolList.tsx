@@ -85,7 +85,7 @@ export const SchoolList = (props: any) => {
     <>
     <div ref={contentToPrint}>
     <List sx={{ p: 2 }} {...props} actions={<ListActions />} filters={SchoolFilter} sortable={false} >
-      <Datagrid rowClick="show" sx={{
+      <Datagrid bulkActionButtons={false}  rowClick="show" sx={{
         "& .RaDatagrid-headerCell": {
           fontWeight: 'bold', m: 1
         },
@@ -99,10 +99,7 @@ export const SchoolList = (props: any) => {
         <TextField source="schoolcontact" label="School Contact" />
         <TextField source="schoolcontactno" label="School Contact No." />
         <StudentsTotalField label="Total Students" />
-        <ShowButton label="" />
-        <EditButton label="" />
         {permissions === 'admin' && <DeleteButton label="" />}
-
       </Datagrid>
     </List>
     </div>

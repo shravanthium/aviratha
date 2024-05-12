@@ -13,7 +13,10 @@ import {
 import {
     Grid,
     InputAdornment,
-    Stack, TextField
+    Stack, 
+    TextField,
+    useMediaQuery, 
+    useTheme
 } from '@mui/material';
 
 const districts = [
@@ -81,6 +84,7 @@ const taluks = [
     'Guledagudda',
     'Gundlupete',
     'Hassan',
+    'Hirekerur',
     'Hiriyur',
     'Holalkere',
     'Holenarasipura',
@@ -108,6 +112,7 @@ const taluks = [
     'Mayakonda',
     'Molakaalmuru',
     'Muddebihal',
+    'Mundagod',
     'Mysore',
     'Nagamangala',
     'Nanjanagoodu',
@@ -140,6 +145,8 @@ const taluks = [
 
 
 export const SchoolCreate = (props: any) => {
+    const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Adjust breakpoint as needed
 
     const notify = useNotify();
     const redirect = useRedirect();
@@ -167,15 +174,14 @@ export const SchoolCreate = (props: any) => {
                 <TextInput source="schoolcontact" label="School Contact Person" validate={required()} />
                 <TextInput source="schoolcontactno" label="School Contact Person No." validate={required()} />
             </Stack>
-            {/* Render 10 NumberInput fields with fixed names */}
-            <Stack spacing={2} direction="row">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
-                    <div key={index}>
-                        <TextInput label="" source={`classes[${index - 1}].name`} defaultValue={`Class ${index}`} disabled />
-                        <NumberInput label="Count" source={`classes[${index - 1}].count`} defaultValue="0" />
-                    </div>
-                ))}
-            </Stack>
+            <Stack spacing={2} direction={isMobile ? 'column' : 'row'}>
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
+        <div key={index}>
+          <TextInput label="" source={`classes[${index - 1}].name`} defaultValue={`Class ${index}`} disabled />
+          <NumberInput label="Count" source={`classes[${index - 1}].count`} defaultValue="0" />
+        </div>
+      ))}
+    </Stack>
         </SimpleForm>
     </Create>
     );
